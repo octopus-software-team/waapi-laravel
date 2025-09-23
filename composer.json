@@ -1,0 +1,22 @@
+{
+  "name": "octopus/waapi",
+  "description": "WAAPI whatsapp api integration for Laravel",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Octopus\\Waapi\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=8.0",
+    "illuminate/support": "^10.0|^11.0"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Octopus\\Waapi\\WaapiServiceProvider"
+      ]
+    }
+  }
+}
