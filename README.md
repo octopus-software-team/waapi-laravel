@@ -2,7 +2,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/octopusteam/waapi-laravel.svg?style=flat-square)](https://packagist.org/packages/octopusteam/waapi-laravel)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 <br>
-[![https://waapi.octopusteam.net](assets/waapi.png)](https://waapi.octopusteam.net)
+[![https://waapi.octopusteam.net](assets/waapi.png)](https://waapi.octopusteam.net)<br>
 Simple and flexible **WhatsApp API integration** for Laravel, built by [Octopus Team](https://github.com/octopus-software-team).  
 This package provides an easy way to send WhatsApp messages using WAAPI.
 
