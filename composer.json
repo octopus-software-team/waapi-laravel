@@ -1,6 +1,44 @@
 {
   "name": "octopusteam/waapi-laravel",
   "description": "WAAPI whatsapp api integration for Laravel",
+  "keywords": [
+    "laravel",
+    "waapi",
+    "whatsapp",
+    "api"
+  ],
+  "homepage": "https://github.com/octopusteam/waapi-laravel",
+  "support": {
+    "issues": "https://github.com/octopusteam/waapi-laravel/issues",
+    "source": "https://github.com/octopusteam/waapi-laravel"
+  },
+  "authors": [
+    {
+      "name": "Octopus Team",
+      "email": "octopussoftwareteam@gmail.com"
+    },
+    {
+      "name": "Abdallah Mahmoud",
+      "email": "abdallahmahmoud1422003@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload-dev": {
+    "psr-4": {
+      "OctopusTeam\\Waapi\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "sort-packages": true,
+    "optimize-autoloader": true
+  },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/octopus-software-team"
+    }
+  ],
   "type": "library",
   "license": "MIT",
   "autoload": {

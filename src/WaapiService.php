@@ -16,7 +16,7 @@ class WaapiService
         $this->authkey = config('waapi.auth_key');
     }
 
-    public function SendMsg(string $phone, string $message,$verify=false,$sandbox=false)
+    public function sendMessage(string $phone, string $message,$verify=false,$sandbox=false)
     {
         return Http::withOptions([
             'verify' => $verify,
