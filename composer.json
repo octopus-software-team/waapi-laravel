@@ -1,5 +1,5 @@
 {
-  "name": "octopusteam/waapi",
+  "name": "octopusteam/waapi-laravel",
   "description": "WAAPI whatsapp api integration for Laravel",
   "type": "library",
   "license": "MIT",
