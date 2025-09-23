@@ -1,6 +1,6 @@
 <?php
 
-namespace Octopus\Waapi;
+namespace OctopusTeam\Waapi;
 
 use Illuminate\Support\ServiceProvider;
 
