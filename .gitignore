@@ -1,0 +1,25 @@
+# Ignore vendor dependencies
+/vendor
+
+# Ignore node dependencies
+/node_modules
+
+# Ignore environment files
+.env
+.env.*.backup
+
+# Ignore IDE/editor settings
+.idea/
+*.iml
+.vscode/
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore logs/cache
+*.log
+*.cache
+
+# Ignore Composer lock file
+composer.lock
