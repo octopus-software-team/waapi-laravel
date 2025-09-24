@@ -4,7 +4,7 @@
 <br>
 [![https://waapi.octopusteam.net](assets/waapi.png)](https://waapi.octopusteam.net)<br>
 Simple and flexible **WhatsApp API integration** for Laravel, built by [Octopus Team](https://github.com/octopus-software-team).  
-This package provides an easy way to send WhatsApp messages using WAAPI.
+This package provides an easy way to send WhatsApp messages using **WAAPI**.
 
 ---
 
@@ -70,6 +70,23 @@ if ($response->successful()) {
 }
 ```
 
+### Send Bulk WhatsApp Messages
+
+```php
+use OctopusTeam\Waapi\Facades\Waapi;
+
+$phones   = ['201234567890','201234567890','201234567890'];
+$message = 'Hello from Octopus Team 🚀';
+
+$response = Waapi::sendBulkMessages($phones, $message);
+
+if ($response->successful()) {
+    echo "Message sent successfully!";
+} else {
+    echo "Failed to send message.";
+}
+```
+
 ---
 
 ## 🧪 Testing
@@ -90,6 +107,7 @@ See `tests/Feature/WaapiTest.php` for a sample test:
 
 ```php
 $response = Waapi::sendMessage('201234567890', 'Hello from Waapi Test 🚀');
+$response = Waapi::sendBulkMessages(['201234567890','201234567890','201234567890'], 'Hello from Waapi Test 🚀');
 $this->assertNotNull($response);
 ```
 
