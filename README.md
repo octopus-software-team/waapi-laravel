@@ -6,7 +6,21 @@
 Simple and flexible **WhatsApp API integration** for Laravel, built by [Octopus Team](https://github.com/octopus-software-team).  
 This package provides an easy way to send WhatsApp messages using **WAAPI**.
 
----
+
+
+## 🛠️ Compatibility
+
+This package supports the following **Laravel** and **PHP** versions:
+
+| Laravel Version | PHP Version(s)   | Supported |
+|-----------------|------------------|------------|
+| 12.x            | 8.3, 8.4         | ✅ |
+| 11.x            | 8.2, 8.3         | ✅ |
+| 10.x            | 8.1, 8.2, 8.3    | ✅ |
+| 9.x             | 8.0, 8.1, 8.2    | ✅ |
+| 8.x             | 7.4, 8.0, 8.1    | ⚠️ (no longer officially supported by Laravel, but package works) |
+
+> ℹ️ We recommend always using the latest **Laravel LTS** and **PHP stable versions** for security and performance.
 
 ## 📦 Installation
 
@@ -16,7 +30,6 @@ Install via [Composer](https://getcomposer.org):
 composer require octopusteam/waapi-laravel
 ```
 
----
 
 ## ⚙️ Configuration
 
@@ -50,7 +63,7 @@ To use this package, you need to create an account and generate your **WAAPI key
 4. After login, go to **My Apps** → **Integration**
 5. Copy your `appkey` and `authkey` from the dashboard
 
----
+
 
 ## 🚀 Usage
 
@@ -104,7 +117,6 @@ if ($response->successful()) {
 }
 ```
 
----
 
 ## 🧪 Testing
 
@@ -116,7 +128,6 @@ Run tests with:
 php artisan test
 ```
 
----
 
 ## 📖 Example Test
 
@@ -128,20 +139,17 @@ $response = Waapi::sendBulkMessages(['201234567890','201234567891'], 'Hello from
 $this->assertNotNull($response);
 ```
 
----
 
 ## 🤝 Contributing
 
 Contributions are welcome!  
 Please open issues and submit pull requests to help improve this package.
 
----
 
 ## 📜 License
 
 This package is open-sourced software licensed under the [MIT license](LICENSE).
 
----
 
 ## ✨ Credits
 
