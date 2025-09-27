@@ -54,7 +54,10 @@
     "laravel": {
       "providers": [
         "OctopusTeam\\Waapi\\WaapiServiceProvider"
-      ]
+      ],
+      "aliases": {
+        "Waapi": "OctopusTeam\\Waapi\\Facades\\Waapi"
+      }
     }
   }
 }
