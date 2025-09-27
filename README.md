@@ -56,7 +56,7 @@ To use this package, you need to create an account and generate your **WAAPI key
 ### Send WhatsApp Message
 
 ```php
-use OctopusTeam\Waapi\Facades\Waapi;
+use OctopusTeam\Waapi\Waapi;
 
 $phone   = '201234567890';
 $message = 'Hello from Octopus Team 🚀';
@@ -73,7 +73,7 @@ if ($response->successful()) {
 ### Send Bulk WhatsApp Messages
 
 ```php
-use OctopusTeam\Waapi\Facades\Waapi;
+use OctopusTeam\Waapi\Waapi;
 
 $phones   = ['201234567890','201234567890','201234567890'];
 $message = 'Hello from Octopus Team 🚀';
