@@ -1,8 +1,8 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/octopusteam/waapi-laravel.svg?style=flat-square)](https://packagist.org/packages/octopusteam/waapi-laravel)
 [![Total Downloads](https://img.shields.io/packagist/dt/octopusteam/waapi-laravel.svg?style=flat-square)](https://packagist.org/packages/octopusteam/waapi-laravel)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)  
 <br>
-[![https://waapi.octopusteam.net](assets/cover.jpg)](https://waapi.octopusteam.net)<br>
+[![https://waapi.octopusteam.net](assets/cover.jpg)](https://waapi.octopusteam.net)  
 Simple and flexible **WhatsApp API integration** for Laravel, built by [Octopus Team](https://github.com/octopus-software-team).  
 This package provides an easy way to send WhatsApp messages using **WAAPI**.
 
@@ -49,14 +49,29 @@ To use this package, you need to create an account and generate your **WAAPI key
 3. Choose a subscription plan (affordable options for continued API access)
 4. After login, go to **My Apps** → **Integration**
 5. Copy your `appkey` and `authkey` from the dashboard
+
 ---
 
 ## 🚀 Usage
 
+### Using the Facade (Recommended)
+
+Since **v1.0.6**, the package includes a `Waapi` facade for easier static access:
+
+```php
+use Waapi;
+
+Waapi::sendOtp('201234567890', '123456');
+Waapi::sendMessage('201234567890', 'Hello from Octopus Team 🚀');
+Waapi::sendBulkMessages(['201234567890','201234567891'], 'Hello from Octopus Team 🚀');
+```
+
+---
+
 ### Send WhatsApp Message
 
 ```php
-use OctopusTeam\Waapi\Waapi;
+use Waapi;
 
 $phone   = '201234567890';
 $message = 'Hello from Octopus Team 🚀';
@@ -70,20 +85,22 @@ if ($response->successful()) {
 }
 ```
 
+---
+
 ### Send Bulk WhatsApp Messages
 
 ```php
-use OctopusTeam\Waapi\Waapi;
+use Waapi;
 
-$phones   = ['201234567890','201234567890','201234567890'];
+$phones   = ['201234567890','201234567891','201234567892'];
 $message = 'Hello from Octopus Team 🚀';
 
 $response = Waapi::sendBulkMessages($phones, $message);
 
 if ($response->successful()) {
-    echo "Message sent successfully!";
+    echo "Messages sent successfully!";
 } else {
-    echo "Failed to send message.";
+    echo "Failed to send messages.";
 }
 ```
 
@@ -107,7 +124,7 @@ See `tests/Feature/WaapiTest.php` for a sample test:
 
 ```php
 $response = Waapi::sendMessage('201234567890', 'Hello from Waapi Test 🚀');
-$response = Waapi::sendBulkMessages(['201234567890','201234567890','201234567890'], 'Hello from Waapi Test 🚀');
+$response = Waapi::sendBulkMessages(['201234567890','201234567891'], 'Hello from Waapi Test 🚀');
 $this->assertNotNull($response);
 ```
 
@@ -129,4 +146,4 @@ This package is open-sourced software licensed under the [MIT license](LICENSE).
 ## ✨ Credits
 
 - [Octopus Team](https://github.com/octopus-software-team)
-- [Abdallah Mahmoud](https://github.com/eldapour)
+- [Abdallah Mahmoud](https://github.com/eldapour)  
