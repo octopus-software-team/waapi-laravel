@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Support\Facades\Config;
-use OctopusTeam\Waapi\Facades\Waapi;
+use OctopusTeam\Waapi\Waapi;
 use Tests\TestCase;
 
 class WaapiTest extends TestCase

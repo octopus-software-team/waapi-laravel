@@ -4,14 +4,14 @@ namespace OctopusTeam\Waapi;
 
 use Illuminate\Support\Facades\Http;
 
-class WaapiService
+class Waapi
 {
     protected string $url;
     protected string $appkey;
     protected string $authkey;
 
     /**
-     * WaapiService constructor.
+     * Waapi constructor.
      */
     public function __construct()
     {
@@ -95,6 +95,4 @@ class WaapiService
             'sandbox' => $sandbox,
         ]);
     }
-
-
 }

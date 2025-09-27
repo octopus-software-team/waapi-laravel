@@ -13,8 +13,8 @@ class WaapiServiceProvider extends ServiceProvider
             'waapi'
         );
 
-        $this->app->singleton(WaapiService::class, function () {
-            return new WaapiService();
+        $this->app->singleton(Waapi::class, function () {
+            return new Waapi();
         });
     }
 
