@@ -10,9 +10,6 @@ class Waapi
     protected string $appkey;
     protected string $authkey;
 
-    /**
-     * Waapi constructor.
-     */
     public function __construct()
     {
         $this->url = config('waapi.app_url');
@@ -21,58 +18,69 @@ class Waapi
     }
 
     /**
-     * @param string $phone
-     * @param string $message
-     * @param bool $verify
-     * @param bool $sandbox
-     * @return mixed
-     * send a message to a single phone
+     * Standardized response formatter.
      */
-    public function sendMessage(string $phone, string $message, bool $verify = false, bool $sandbox = false): mixed
+    protected function formatResponse($httpResponse): array
     {
-        return Http::withOptions([
-            'verify' => $verify,
-        ])->asForm()->post($this->url, [
-            'appkey' => $this->appkey,
-            'authkey' => $this->authkey,
-            'to' => $phone,
-            'message' => $message,
-            'sandbox' => $sandbox,
-        ]);
+        if ($httpResponse->successful()) {
+            return [
+                'success' => true,
+                'status' => $httpResponse->status(),
+                'data' => $httpResponse->json(),
+            ];
+        }
+
+        return [
+            'success' => false,
+            'status' => $httpResponse->status(),
+            'error' => $httpResponse->body(),
+        ];
     }
 
     /**
-     * @param array $phones
-     * @param string $message
-     * @param bool $verify
-     * @param bool $sandbox
-     * @return array
-     * send bulk messages to multiple phones
+     * Send a message to a single phone.
      */
-    public function sendBulkMessages(array $phones, string $message, bool $verify = false, bool $sandbox = false): array
+    public function sendMessage(string $phone, string $message, bool $verify = false, bool $sandbox = false): array
     {
-        $responses = [];
-
-        foreach ($phones as $phone) {
-            $responses[] = Http::withOptions([
-                'verify' => $verify,
-            ])->asForm()->post($this->url, [
+        $response = Http::withOptions(['verify' => $verify])
+            ->asForm()
+            ->post($this->url, [
                 'appkey' => $this->appkey,
                 'authkey' => $this->authkey,
                 'to' => $phone,
                 'message' => $message,
                 'sandbox' => $sandbox,
             ]);
-        }
 
-        return $responses;
+        return $this->formatResponse($response);
     }
 
     /**
-     * @param $length
-     * @return int
-     * @throws \Exception
-     * generate OTP for the user before sending a message
+     * Send bulk messages to multiple phones.
+     */
+    public function sendBulkMessages(array $phones, string $message, bool $verify = false, bool $sandbox = false): array
+    {
+        $results = [];
+
+        foreach ($phones as $phone) {
+            $response = Http::withOptions(['verify' => $verify])
+                ->asForm()
+                ->post($this->url, [
+                    'appkey' => $this->appkey,
+                    'authkey' => $this->authkey,
+                    'to' => $phone,
+                    'message' => $message,
+                    'sandbox' => $sandbox,
+                ]);
+
+            $results[$phone] = $this->formatResponse($response);
+        }
+
+        return $results;
+    }
+
+    /**
+     * Generate OTP.
      */
     public function generateOtp($length = 6): int
     {
@@ -80,19 +88,24 @@ class Waapi
         for ($i = 0; $i < $length; $i++) {
             $otp .= mt_rand(0, 9);
         }
-        return $otp;
+        return (int) $otp;
     }
 
-    public function sendOtp(string $phone, string $otp, bool $verify = false, bool $sandbox = false): mixed
+    /**
+     * Send an OTP message.
+     */
+    public function sendOtp(string $phone, string $otp, bool $verify = false, bool $sandbox = false): array
     {
-        return Http::withOptions([
-            'verify' => $verify,
-        ])->asForm()->post($this->url, [
-            'appkey' => $this->appkey,
-            'authkey' => $this->authkey,
-            'to' => $phone,
-            'message' => "Your OTP is: ({$otp}). Do not share this code with anyone.",
-            'sandbox' => $sandbox,
-        ]);
+        $response = Http::withOptions(['verify' => $verify])
+            ->asForm()
+            ->post($this->url, [
+                'appkey' => $this->appkey,
+                'authkey' => $this->authkey,
+                'to' => $phone,
+                'message' => "{$otp} is your code. Don't share it.",
+                'sandbox' => $sandbox,
+            ]);
+
+        return $this->formatResponse($response);
     }
 }
