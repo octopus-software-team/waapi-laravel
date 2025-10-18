@@ -76,7 +76,6 @@ use Waapi;
 
 Waapi::sendOtp('201234567890', '123456');
 Waapi::sendMessage('201234567890', 'Hello from Octopus Team 🚀');
-Waapi::sendBulkMessages(['201234567890','201234567891'], 'Hello from Octopus Team 🚀');
 ```
 
 ---
@@ -100,24 +99,6 @@ if ($response->successful()) {
 
 ---
 
-### Send Bulk WhatsApp Messages
-
-```php
-use Waapi;
-
-$phones   = ['201234567890','201234567891','201234567892'];
-$message = 'Hello from Octopus Team 🚀';
-
-$response = Waapi::sendBulkMessages($phones, $message);
-
-if ($response->successful()) {
-    echo "Messages sent successfully!";
-} else {
-    echo "Failed to send messages.";
-}
-```
-
-
 ## 🧪 Testing
 
 This package comes with a basic test example.
@@ -135,7 +116,6 @@ See `tests/Feature/WaapiTest.php` for a sample test:
 
 ```php
 $response = Waapi::sendMessage('201234567890', 'Hello from Waapi Test 🚀');
-$response = Waapi::sendBulkMessages(['201234567890','201234567891'], 'Hello from Waapi Test 🚀');
 $this->assertNotNull($response);
 ```
 
