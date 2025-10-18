@@ -56,30 +56,6 @@ class Waapi
     }
 
     /**
-     * Send bulk messages to multiple phones.
-     */
-    public function sendBulkMessages(array $phones, string $message, bool $verify = false, bool $sandbox = false): array
-    {
-        $results = [];
-
-        foreach ($phones as $phone) {
-            $response = Http::withOptions(['verify' => $verify])
-                ->asForm()
-                ->post($this->url, [
-                    'appkey' => $this->appkey,
-                    'authkey' => $this->authkey,
-                    'to' => $phone,
-                    'message' => $message,
-                    'sandbox' => $sandbox,
-                ]);
-
-            $results[$phone] = $this->formatResponse($response);
-        }
-
-        return $results;
-    }
-
-    /**
      * Generate OTP.
      */
     public function generateOtp($length = 6): int
