@@ -51,6 +51,9 @@ config/waapi.php
 WAAPI_URL="https://api.example.com/v1/"
 WAAPI_APP_KEY=xxxxxxxxxxxxxxxxx
 WAAPI_AUTH_KEY=xxxxxxxxxxxxxxxx
+WAAPI_WEBHOOK_URL=/api/webhook/whatsapp
+WAAPI_WEBHOOK_ENABLE=true
+WAAPI_WEBHOOK_AUTO_REGISTER=true
 ```
 
 ### 🔑 Get Your API Key
@@ -76,6 +79,7 @@ use Waapi;
 
 Waapi::sendOtp('201234567890', '123456');
 Waapi::sendMessage('201234567890', 'Hello from Octopus Team 🚀');
+
 ```
 
 ---
