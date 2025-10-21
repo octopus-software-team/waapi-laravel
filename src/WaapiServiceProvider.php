@@ -3,6 +3,7 @@
 namespace OctopusTeam\Waapi;
 
 use Illuminate\Support\ServiceProvider;
+use OctopusTeam\Waapi\Console\Commands\RenewWebhookToken;
 
 class WaapiServiceProvider extends ServiceProvider
 {
