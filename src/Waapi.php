@@ -76,7 +76,6 @@ class Waapi
     public function getWebhookSiteData(int $limit = 50): array
     {
         $token = config('waapi.webhook.webhook_site_token');
-        $apiKey = config('waapi.webhook.webhook_site_api_key');
 
         if (!$token) {
             return [
@@ -88,9 +87,7 @@ class Waapi
         try {
             $url = "https://webhook.site/token/{$token}/requests";
 
-            $request = Http::when($apiKey, function ($http) use ($apiKey) {
-                return $http->withHeaders(['Api-Key' => $apiKey]);
-            });
+            $request = Http::withOptions(['verify' => false]);
 
             $response = $request->get($url, ['per_page' => $limit]);
 
@@ -120,7 +117,6 @@ class Waapi
     public function getWebhookSiteRequest(string $requestId): array
     {
         $token = config('waapi.webhook.webhook_site_token');
-        $apiKey = config('waapi.webhook.webhook_site_api_key');
 
         if (!$token) {
             return [
@@ -132,9 +128,7 @@ class Waapi
         try {
             $url = "https://webhook.site/token/{$token}/request/{$requestId}";
 
-            $request = Http::when($apiKey, function ($http) use ($apiKey) {
-                return $http->withHeaders(['Api-Key' => $apiKey]);
-            });
+            $request = Http::withOptions(['verify' => false]);
 
             $response = $request->get($url);
 

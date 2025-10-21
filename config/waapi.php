@@ -12,6 +12,5 @@ return [
 
         // إعدادات Webhook.site للاختبار
         'webhook_site_token' => env('WAAPI_WEBHOOK_SITE_TOKEN', null),
-        'webhook_site_api_key' => env('WAAPI_WEBHOOK_SITE_API_KEY', null),
     ],
 ];

@@ -59,7 +59,6 @@ WAAPI_WEBHOOK_AUTO_REGISTER=true
 
 # Webhook.site 
 WAAPI_WEBHOOK_SITE_TOKEN=your-webhook-site-token
-WAAPI_WEBHOOK_SITE_API_KEY=your-api-key
 
 ```
 
