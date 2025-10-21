@@ -22,12 +22,128 @@ class Waapi
         $this->appkey = config('waapi.app_key');
         $this->authkey = config('waapi.auth_key');
         $this->webhookUrl = config('waapi.webhook.url', '/api/webhook/whatsapp');
-        $this->webhookEnabled = config('waapi.webhook.enable', true);
+        $this->webhookEnabled = config('waapi.webhook.enabled', true);
         $this->autoRegister = config('waapi.webhook.auto_register', true);
 
         // تسجيل الـ route تلقائياً إذا كان مفعل
         if ($this->autoRegister && $this->webhookEnabled) {
             $this->registerWebhookRoute();
+        }
+    }
+
+    /**
+     * Register webhook route automatically.
+     */
+    protected function registerWebhookRoute(): void
+    {
+        Route::post($this->webhookUrl, function (Request $request) {
+            return $this->handleWebhook($request);
+        })->name('waapi.webhook');
+    }
+
+    /**
+     * Handle incoming webhook data.
+     */
+    public function handleWebhook(Request $request): array
+    {
+        try {
+            $data = $request->all();
+
+            // Log the incoming webhook data
+            Log::info('WAAPI Webhook received:', $data);
+
+            // يمكنك معالجة البيانات هنا
+            // مثل: fire event, store in database, etc.
+
+            return [
+                'success' => true,
+                'message' => 'Webhook received successfully',
+                'data' => $data,
+            ];
+        } catch (\Exception $e) {
+            Log::error('WAAPI Webhook error: ' . $e->getMessage());
+
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Get webhook data from Webhook.site API.
+     */
+    public function getWebhookSiteData(int $limit = 50): array
+    {
+        $token = config('waapi.webhook.webhook_site_token');
+        $apiKey = config('waapi.webhook.webhook_site_api_key');
+
+        if (!$token) {
+            return [
+                'success' => false,
+                'error' => 'Webhook.site token not configured',
+            ];
+        }
+
+        try {
+            $url = "https://webhook.site/token/{$token}/requests";
+
+            $request = Http::when($apiKey, function ($http) use ($apiKey) {
+                return $http->withHeaders(['Api-Key' => $apiKey]);
+            });
+
+            $response = $request->get($url, ['per_page' => $limit]);
+
+            if ($response->successful()) {
+                return [
+                    'success' => true,
+                    'data' => $response->json(),
+                ];
+            }
+
+            return [
+                'success' => false,
+                'status' => $response->status(),
+                'error' => $response->body(),
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Get specific webhook request from Webhook.site.
+     */
+    public function getWebhookSiteRequest(string $requestId): array
+    {
+        $token = config('waapi.webhook.webhook_site_token');
+        $apiKey = config('waapi.webhook.webhook_site_api_key');
+
+        if (!$token) {
+            return [
+                'success' => false,
+                'error' => 'Webhook.site token not configured',
+            ];
+        }
+
+        try {
+            $url = "https://webhook.site/token/{$token}/request/{$requestId}";
+
+            $request = Http::when($apiKey, function ($http) use ($apiKey) {
+                return $http->withHeaders(['Api-Key' => $apiKey]);
+            });
+
+            $response = $request->get($url);
+
+            return $this->formatResponse($response);
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+            ];
         }
     }
 
@@ -97,138 +213,5 @@ class Waapi
             ]);
 
         return $this->formatResponse($response);
-    }
-
-    /**
-     * Process incoming webhook data from array
-     */
-    public function processWebhook(array $webhookData): array
-    {
-        try {
-            // Log the incoming webhook
-            Log::info('WhatsApp Webhook Received', $webhookData);
-
-            // Extract data
-            $sender = $webhookData['sender'] ?? null;
-            $receiver = $webhookData['receiver'] ?? null;
-            $conversation = $webhookData['payload']['conversation'] ?? null;
-            $messageContextInfo = $webhookData['payload']['messageContextInfo'] ?? null;
-
-            // Process the webhook data
-            $processedData = [
-                'sender' => $sender,
-                'receiver' => $receiver,
-                'conversation' => $conversation,
-                'message_context' => $messageContextInfo,
-                'processed_at' => now()->toDateTimeString()
-            ];
-
-            // Here you can add your business logic
-            $this->handleWebhookBusinessLogic($processedData);
-
-            Log::info('Webhook processed successfully', $processedData);
-
-            return [
-                'success' => true,
-                'message' => 'Webhook processed successfully',
-                'data' => $processedData
-            ];
-
-        } catch (\Exception $e) {
-            Log::error('Webhook processing failed: ' . $e->getMessage(), [
-                'exception' => $e,
-                'webhook_data' => $webhookData
-            ]);
-
-            return [
-                'success' => false,
-                'message' => 'Webhook processing failed',
-                'error' => $e->getMessage()
-            ];
-        }
-    }
-
-    /**
-     * Process webhook from Request object
-     */
-    public function processWebhookFromRequest(Request $request): array
-    {
-        return $this->processWebhook($request->all());
-    }
-
-    /**
-     * Process webhook from JSON string
-     */
-    public function processWebhookFromJson(string $jsonData): array
-    {
-        $webhookData = json_decode($jsonData, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            return [
-                'success' => false,
-                'message' => 'Invalid JSON data',
-                'error' => json_last_error_msg()
-            ];
-        }
-
-        return $this->processWebhook($webhookData);
-    }
-
-    /**
-     * Register webhook route automatically
-     */
-    protected function registerWebhookRoute(): void
-    {
-        if (!$this->webhookEnabled) {
-            return;
-        }
-
-        Route::post($this->webhookUrl, function (Request $request) {
-            return response()->json($this->processWebhookFromRequest($request));
-        });
-    }
-
-    /**
-     * Get full webhook URL for external services
-     */
-    public function getWebhookUrl(): string
-    {
-        return url($this->webhookUrl);
-    }
-
-    /**
-     * Check if webhook is enabled
-     */
-    public function isWebhookEnabled(): bool
-    {
-        return $this->webhookEnabled;
-    }
-
-    /**
-     * Get webhook configuration
-     */
-    public function getWebhookConfig(): array
-    {
-        return [
-            'url' => $this->getWebhookUrl(),
-            'enabled' => $this->webhookEnabled,
-            'auto_register' => $this->autoRegister,
-            'route' => $this->webhookUrl
-        ];
-    }
-
-    /**
-     * Business logic for handling webhook
-     */
-    protected function handleWebhookBusinessLogic(array $data): void
-    {
-        // Example business logic - you can customize this
-        Log::info('Business logic executed for webhook', $data);
-
-        // Here you can:
-        // - Save to database
-        // - Trigger events
-        // - Send auto-reply
-        // - etc.
     }
 }

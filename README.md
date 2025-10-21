@@ -48,12 +48,19 @@ config/waapi.php
 3. Update your `.env` with your WAAPI credentials with the following variables in config/waapi.php:
 
 ```env
-WAAPI_URL="https://api.example.com/v1/"
-WAAPI_APP_KEY=xxxxxxxxxxxxxxxxx
-WAAPI_AUTH_KEY=xxxxxxxxxxxxxxxx
+WAAPI_URL=https://waapi.octopusteam.net/api/create-message
+WAAPI_APP_KEY=your_app_key
+WAAPI_AUTH_KEY=your_auth_key
+
+# Webhook
 WAAPI_WEBHOOK_URL=/api/webhook/whatsapp
-WAAPI_WEBHOOK_ENABLE=true
+WAAPI_WEBHOOK_ENABLED=true
 WAAPI_WEBHOOK_AUTO_REGISTER=true
+
+# Webhook.site 
+WAAPI_WEBHOOK_SITE_TOKEN=your-webhook-site-token
+WAAPI_WEBHOOK_SITE_API_KEY=your-api-key
+
 ```
 
 ### 🔑 Get Your API Key
