@@ -23,5 +23,14 @@ class WaapiServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../config/waapi.php' => config_path('waapi.php'),
         ], 'config');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                RenewWebhookToken::class,
+            ]);
+        }
+
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+
     }
 }
