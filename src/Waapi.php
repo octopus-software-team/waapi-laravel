@@ -112,6 +112,43 @@ class Waapi
     }
 
     /**
+     * Get webhook data from Webhook.site API and decode content data.
+     */
+    public function getWebHookSiteContent(int $limit = 50)
+    {
+        $data = $this->getWebhookSiteData($limit);
+
+        if ($data['success']) {
+            // التحقق من وجود البيانات
+            if (isset($data['data']['data']) && is_array($data['data']['data']) && count($data['data']['data']) > 0) {
+                $allRequests = [];
+
+                // Loop على كل الـ requests
+                foreach ($data['data']['data'] as $request) {
+                    // التحقق من وجود content
+                    if (isset($request['content'])) {
+                        // محاولة decode الـ JSON
+                        $content = json_decode($request['content'], true);
+
+                        // التحقق من نجاح الـ decode
+                        if (json_last_error() === JSON_ERROR_NONE) {
+                            $allRequests[] = $content;
+                        } else {
+                            // إذا لم يكن JSON، إرجاع الـ content كما هو
+                            $allRequests[] = $request['content'];
+                        }
+                    }
+                }
+
+                return $allRequests;
+            }
+
+            return []; // لا توجد بيانات
+        }
+
+        return []; // فشل الطلب
+    }
+    /**
      * Get specific webhook request from Webhook.site.
      */
     public function getWebhookSiteRequest(string $requestId): array
