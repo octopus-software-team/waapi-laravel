@@ -30,8 +30,5 @@ class WaapiServiceProvider extends ServiceProvider
                 RenewWebhookToken::class,
             ]);
         }
-
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
-
     }
 }
