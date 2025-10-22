@@ -5,12 +5,11 @@ namespace OctopusTeam\Waapi\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use OctopusTeam\Waapi\Models\WebhookToken; // لو عندك موديل داخل الباكدج
 
 class RenewWebhookToken extends Command
 {
     protected $signature = 'waapi:webhook-renew';
-    protected $description = 'Renew webhook.site token every 7 days';
+    protected $description = 'Renew webhook.site token';
 
     public function handle()
     {
@@ -21,19 +20,6 @@ class RenewWebhookToken extends Command
                 $this->error('Failed to create new webhook token');
                 Log::error('Failed to create new webhook token');
                 return 1;
-            }
-
-            // لو عندك موديل WebhookToken داخل الباكدچ
-            if (class_exists(WebhookToken::class)) {
-                WebhookToken::where('is_active', true)->update(['is_active' => false]);
-                WebhookToken::create([
-                    'token' => $newToken['uuid'],
-                    'url' => "https://webhook.site/{$newToken['uuid']}",
-                    'is_active' => true,
-                    'expires_at' => now()->addDays(7),
-                    'request_count' => 0,
-                ]);
-                WebhookToken::where('is_active', false)->delete();
             }
 
             $this->info("New webhook token created: {$newToken['uuid']}");
@@ -83,6 +69,7 @@ class RenewWebhookToken extends Command
 
         file_put_contents($envFile, $content);
 
+        // Update the webhook URL via API
         Http::withOptions(['verify' => false])
             ->get('https://waapi.octopusteam.net/update-hook-by-uuid', [
                 'uuid' => env('WAAPI_UPDATE_DEVICE_WEBHOOK'),
@@ -90,5 +77,6 @@ class RenewWebhookToken extends Command
             ]);
 
         $this->info('.env file updated with new token');
+        $this->info('Webhook URL updated via API');
     }
 }
