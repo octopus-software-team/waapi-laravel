@@ -1,167 +1,97 @@
-# OctopusTeam WAAPI Laravel
+# WAAPI Laravel Package
 
-Simple and flexible **WhatsApp API integration** for Laravel, built by Octopus Team.
+![WAAPI Logo](assets/cover.jpg)
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/octopusteam/waapi-laravel.svg?style=flat-square)](https://packagist.org/packages/octopusteam/waapi-laravel) [![Total Downloads](https://img.shields.io/packagist/dt/octopusteam/waapi-laravel.svg?style=flat-square)](https://packagist.org/packages/octopusteam/waapi-laravel) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-![IMAGE](assets/cover.jpg)
----
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/octopusteam/waapi-laravel.svg?style=flat-square)](https://packagist.org/packages/octopusteam/waapi-laravel)
+[![Total Downloads](https://img.shields.io/packagist/dt/octopusteam/waapi-laravel.svg?style=flat-square)](https://packagist.org/packages/octopusteam/waapi-laravel)
+[![License](https://img.shields.io/packagist/l/octopusteam/waapi-laravel.svg?style=flat-square)](https://packagist.org/packages/octopusteam/waapi-laravel)
 
-## 📦 Installation
+This package provides a simple and expressive API for interacting with the WAAPI (WhatsApp API) service within a Laravel application.
+
+## Features
+
+- Send text messages and OTPs.
+- Fluent and expressive API.
+- Automatic webhook route registration.
+- Handlers for incoming webhook data.
+- Integration with Webhook.site for easy debugging.
+- Artisan command to renew Webhook.site token.
+
+## Installation
 
 ```bash
 composer require octopusteam/waapi-laravel
 ```
 
-Then publish the config file:
+Publish the configuration file:
 
 ```bash
-php artisan vendor:publish --provider="OctopusTeam\Waapi\WaapiServiceProvider" --tag="config"
+php artisan vendor:publish --provider="OctopusTeam\Waapi\WaapiServiceProvider"
 ```
 
-This will create `config/waapi.php`.
+This will create a `config/waapi.php` file in your application.
 
----
+## Configuration
 
-## ⚙️ Configuration
+Update your `.env` file with your WAAPI credentials:
 
-Add or update the following environment variables in your `.env` file:
-
-```env
-WAAPI_URL=https://waapi.octopusteam.net/api/create-message
+```
+WAAPI_APP_URL=https://waapi.octopusteam.net/api/v1/message/send
 WAAPI_APP_KEY=your_app_key
 WAAPI_AUTH_KEY=your_auth_key
-
-# Webhook
-WAAPI_WEBHOOK_URL=/api/webhook/whatsapp
-WAAPI_WEBHOOK_ENABLED=true
-WAAPI_WEBHOOK_AUTO_REGISTER=true
-
-# Webhook.site (optional for testing)
-WAAPI_WEBHOOK_SITE_TOKEN=your-webhook-site-token
-WAAPI_UPDATE_DEVICE_WEBHOOK=your-device-uuid-from-waapi
+WAAPI_WEBHOOK_SITE_TOKEN=your_webhook_site_token
+WAAPI_UPDATE_DEVICE_WEBHOOK=your_device_uuid_for_webhook_update
 ```
 
-You can also modify the default configuration in `config/waapi.php`.
+## Usage
 
----
+### Sending Messages
 
-## 🚀 Usage
-
-### Handle Incoming Webhooks
-
-Webhook route will be auto-registered if `WAAPI_WEBHOOK_ENABLED=true` and `WAAPI_WEBHOOK_AUTO_REGISTER=true` in your config.
-
-You can handle it manually if you prefer:
-
-```php
-use Illuminate\Http\Request;
-use OctopusTeam\Waapi\Facades\Waapi;
-
-Route::post('/api/webhook/whatsapp', function (Request $request) {
-    return Waapi::handleWebhook($request);
-});
-```
-
----
-
-### Send a WhatsApp Message
+You can send messages using the `Waapi` facade or by injecting the `Waapi` class.
 
 ```php
 use OctopusTeam\Waapi\Facades\Waapi;
 
-$response = Waapi::sendMessage('201234567890', 'Hello from Octopus Team 🚀');
+// Send a simple text message
+$response = Waapi::sendMessage('1234567890', 'Hello, world!');
 
-if ($response['success']) {
-    echo "Message sent successfully!";
-} else {
-    echo "Failed to send message.";
-}
+// Send an OTP
+$otp = Waapi::generateOtp();
+$response = Waapi::sendOtp('1234567890', $otp);
 ```
 
----
+### Webhook Handling
 
-### Send an OTP
+The package can automatically register a webhook route to handle incoming data from WAAPI. To enable this, ensure the following is in your `config/waapi.php`:
 
 ```php
-use OctopusTeam\Waapi\Facades\Waapi;
-
-$otp = Waapi::generateOtp(6);
-$response = Waapi::sendOtp('201234567890', $otp);
+'webhook' => [
+    'enabled' => true,
+    'auto_register' => true,
+],
 ```
 
----
+By default, the route is `POST /api/webhook/whatsapp`. You can customize the logic for handling webhooks in the `Waapi` class's `handleWebhook` method.
 
-### Work with Webhook.site (for testing)
+### Webhook.site Integration
+
+For development and debugging, you can use the Webhook.site integration to inspect incoming webhook data.
 
 ```php
-use OctopusTeam\Waapi\Facades\Waapi;
-
-// Get webhook requests
+// Get the last 50 requests from Webhook.site
 $data = Waapi::getWebhookSiteData(50);
 
-// Decode JSON contents automatically
-$contents = Waapi::getWebhookSiteContent(50);
+// Get the decoded content from the last 50 requests
+$content = Waapi::getWebHookSiteContent(50);
 
-// Get a specific webhook request by ID
-$request = Waapi::getWebhookSiteRequest('your-request-id');
+// Get a specific request by its ID
+$request = Waapi::getWebhookSiteRequest('request-uuid');
 ```
 
----
+### Artisan Command
 
-## 🧭 Command: Renew Webhook Token
-
-You can renew your Webhook.site token automatically with:
+To renew your `webhook.site` token automatically, you can run the following Artisan command. This will generate a new token, update your `.env` file, and update the webhook URL via the WAAPI service.
 
 ```bash
 php artisan waapi:webhook-renew
 ```
-
-This command will:
-1. Create a new Webhook.site token.
-2. Update your `.env` file automatically.
-3. Notify WAAPI API to update the device’s webhook URL.
-
----
-
-## ✅ Compatibility
-
-| Laravel Version | PHP Version(s) | Supported |
-|-----------------|------------------|------------|
-| 12.x            | 8.3, 8.4         | ✅ |
-| 11.x            | 8.2, 8.3         | ✅ |
-| 10.x            | 8.1, 8.2, 8.3    | ✅ |
-| 9.x             | 8.0, 8.1, 8.2    | ✅ |
-| 8.x             | 7.4, 8.0, 8.1    | ⚠️ Works but not officially supported |
-
----
-
-## 🧪 Testing
-
-You can run basic tests included in `tests/Feature/WaapiTest.php`:
-
-```bash
-php artisan test
-```
-
----
-
-## 🤝 Contributing
-
-Contributions are always welcome!
-
-- Open issues or feature requests
-- Submit pull requests
-- Improve documentation
-
----
-
-## 📜 License
-
-This package is open-source software licensed under the [MIT license](LICENSE).
-
----
-
-## ✨ Credits
-
-- [Octopus Team](https://github.com/octopus-software-team)
-- [Abdallah Mahmoud](https://github.com/eldapour)

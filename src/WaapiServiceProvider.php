@@ -7,6 +7,11 @@ use OctopusTeam\Waapi\Console\Commands\RenewWebhookToken;
 
 class WaapiServiceProvider extends ServiceProvider
 {
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
     public function register()
     {
         $this->mergeConfigFrom(
@@ -19,6 +24,11 @@ class WaapiServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
     public function boot()
     {
         $this->publishes([

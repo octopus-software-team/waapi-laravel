@@ -6,11 +6,33 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Class RenewWebhookToken
+ *
+ * This command handles the renewal of the webhook.site token.
+ * It creates a new token, updates the .env file, and updates the webhook URL via API.
+ */
 class RenewWebhookToken extends Command
 {
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
     protected $signature = 'waapi:webhook-renew';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
     protected $description = 'Renew webhook.site token';
 
+    /**
+     * Execute the console command.
+     *
+     * @return int
+     */
     public function handle()
     {
         try {
@@ -35,6 +57,11 @@ class RenewWebhookToken extends Command
         }
     }
 
+    /**
+     * Create a new webhook token.
+     *
+     * @return array|null
+     */
     private function createNewWebhookToken(): ?array
     {
         try {
@@ -48,6 +75,12 @@ class RenewWebhookToken extends Command
         }
     }
 
+    /**
+     * Update the .env file with the new token and update the webhook URL via API.
+     *
+     * @param string $token
+     * @return void
+     */
     private function updateEnvFile(string $token): void
     {
         $envFile = base_path('.env');
